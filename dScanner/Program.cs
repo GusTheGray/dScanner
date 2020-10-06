@@ -60,7 +60,10 @@ namespace dScanner
             inputChannel.Writer.Complete();
             await inputChannel.Reader.Completion.ConfigureAwait(false);
             await Task.WhenAll(Jobs).ConfigureAwait(false);
-            await resultsTask.ConfigureAwait(true);
+
+            resultChannel.Writer.TryComplete();
+
+            await resultsTask.ConfigureAwait(false);
 
             return "Jobs Completed";
         }
@@ -81,7 +84,7 @@ namespace dScanner
                 outputWriter.TryWrite($"Results for {target}\n{output}");
             }
 
-            outputWriter.TryComplete();
+            //outputWriter.TryComplete();
         }
 
         private static async Task ResultsWriterAsync(ChannelReader<string> reader, string outputFile)
