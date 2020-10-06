@@ -7,7 +7,7 @@ namespace dScanner.Scanners
     public class NmapScanner
     {
         const string strCommand = "docker";
-        const string strCommandParameters = "run kali-nmap nmap -A";
+        const string strCommandParameters = "run --rm kali-nmap nmap -A";
         System.Diagnostics.Process process;
         public NmapScanner()
         {

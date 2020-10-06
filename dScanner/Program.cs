@@ -58,12 +58,12 @@ namespace dScanner
                 inputChannel.Writer.TryWrite(target);
             }
             inputChannel.Writer.Complete();
-            await inputChannel.Reader.Completion.ConfigureAwait(false);
-            await Task.WhenAll(Jobs).ConfigureAwait(false);
+            await inputChannel.Reader.Completion;
+            await Task.WhenAll(Jobs);
 
             resultChannel.Writer.TryComplete();
 
-            await resultsTask.ConfigureAwait(false);
+            await resultsTask;
 
             return "Jobs Completed";
         }
@@ -74,14 +74,16 @@ namespace dScanner
             while (await inputReader.WaitToReadAsync())
             {
                 string target;
-                string output="";
+                string output;
+
                 while (inputReader.TryRead(out target))
                 {
                     Console.WriteLine($"Scanning {target}");
                     output = scanner.RunNmapScan(target);
+
+                    outputWriter.TryWrite($"Results for {target}\n{output}");
                 }
 
-                outputWriter.TryWrite($"Results for {target}\n{output}");
             }
 
             //outputWriter.TryComplete();
